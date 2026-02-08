@@ -2609,8 +2609,8 @@ Step 3: Configure desired NAT
 ~~~
 !@R1
 conf t
- ip nat inside source static 10.1.4.6 209.9.9.1 
- ip nat inside source static 10.1.1.2 209.9.9.2
+ ip nat inside source static 10.1.1.2 209.9.9.1 
+ ip nat inside source static 10.1.1.6 209.9.9.2
  ip nat inside source static 10.1.1.10 209.9.9.3
  end
 show ip nat translations
