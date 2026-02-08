@@ -1503,10 +1503,10 @@ conf t
 ~~~
 !@R4
 conf t
- router ___  __
-  router-id __.__.__.__
-  network __.__.__.__  __.__.__.__ area __
-  network __.__.__.__  __.__.__.__ area __
+ router osfp  1
+  router-id 4.4.4.4
+  network 10.1.1.8  0.0.0.3 area 0
+  network 4.4.4.4  0.0.0.0 area 0
   end
 ~~~
 
@@ -1815,7 +1815,7 @@ show ip ospf neighbor
 - Configure R2 with the highest priority on its e1/2 interface.
 
 ~~~
-!@R4
+!@R4  ""one of the labs in the exam""
 conf t
  int e1/2
   ip ospf network point-to-point
@@ -1993,10 +1993,6 @@ conf t
 
 ~~~
 !@R4
-conf t
- router ospf 1
-  passive-interface lo4
-  end
 ~~~
 
 <br>
@@ -2051,12 +2047,12 @@ conf t
 
 | Legend | Routing Protocol | Administrative Distance | Metric |
 | ---    | ---              | ---                     | ---    |
-| C      | Connected        |                         |        |
-| S      | Static           |                         |        |
-| D      | EIGRP            |                         |        |
-| D EX   | External EIGRP   |                         |        |
-| O      | OSPF             |                         |        |
-| O E2   | External T5 OSPF |                         |        |
+| C      | Connected        |   0                      |        |
+| S      | Static           |    1                     |        |
+| D      | EIGRP            |     90                    |        |
+| D EX   | External EIGRP   |       170                  |        |
+| O      | OSPF             |         110                |        |
+| O E2   | External T5 OSPF |         110                |        |
 
 ~~~
 !@R4, D1, R3
@@ -2086,6 +2082,10 @@ conf t
 
 ---
 &nbsp;
+
+
+
+
 
 ### Route Summarization
 ~~~
@@ -2365,21 +2365,21 @@ conf t
 
 ~~~
 !@I3 - GLOBE
-conf t
- router bgp __
-  bgp log-neighbor-changes
-  ______  __.__.__.__ remote-as __
-  ______  __.__.__.__ remote-as __
-  ______  __.__.__.__ remote-as __
-  address-family __
-   ______  __.__.__.__ activate
-   ______  __.__.__.__ activate
-   ______  __.__.__.__ activate
-   ______  __.__.__.__ mask __.__.__.__
-   ______  __.__.__.__ mask __.__.__.__
-   ______  __.__.__.__ mask __.__.__.__
-   ______  __.__.__.__ mask __.__.__.__
-   end
+	conf t
+ 	router bgp 3
+  	bgp log-neighbor-changes
+  	neighbor  32.3.2.2 remote-as 2
+  	neighbor  209.9.9.1 remote-as 1
+  	neighbor  35.3.5.5 remote-as 45
+  	address-family ipv4
+	neighbor 32.3.2.2 activate
+   	neighbor 209.9.9.1 activate
+   	neighbor  35.3.5.5 activate
+   	network  32.3.2.0 mask 255.255.255.0
+   	network 209.9.9.0   mask 255.255.255.0
+   	network 35.3.5.0   mask 255.255.255.0
+   	network 33.33.33.33   mask 255.255.255.255
+   	end
 ~~~
 
 <br>
