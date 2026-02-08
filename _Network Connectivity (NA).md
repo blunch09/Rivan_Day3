@@ -2141,12 +2141,12 @@ Steps to summarize routes for OSPF
 
 <br>
 
-2. From the specified octet, find the difference between the first network (8) and the last (11).
+2. From the specified octet, find the difference between the first network (8) and the last (11).  
 11 - 8 = 3
 
 <br>
 
-3. Pick an i that can aggregate all the routes
+3. Pick an i that can aggregate all the routes  
 4i
 
 <br>
