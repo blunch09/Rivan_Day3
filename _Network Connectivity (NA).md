@@ -2707,7 +2707,6 @@ conf t
 
 
 ### Dynamic NAT
-Step 1: Configure a NAT Pool
 ~~~
 !@R1
 conf t
@@ -2732,87 +2731,167 @@ ping 8.8.8.8
 &nbsp;
 
 ### PAT 1:Many
-
-
-
-
-
-!@D1
-ping 8.8.8.8 source 10.2.1.1
-
-Ans
-
-R1 does not have a route for 10.2.1.0/24 network
-
-SOLUTION
-Either remove the static route from R4 to 10.2.1.0/24 network to prevent R4 from discarding the route learned via EIGRP
-
-!@R4
+Remove Dynamic NAT
+~~~
+!@R1
+clear ip nat trans *
 conf t
- no ip route 10.2.1.0 255.255.255.0 10.1.4.6
+ ip nat pool NATPOOL 208.8.8.10 208.8.8.20 netmask 255.255.255.0
+ no ip nat inside source list 1 pool NATPOOL
+ end
+~~~
+
+<br>
+
+Configure NAT Overloading / PAT
+~~~
+!@R1
+conf t
+ ip nat inside source list 1 int e1/2 overload
+ end
+~~~
+
+<br>
+<br>
+
+&nbsp;
+---
+&nbsp;
+
+### 🎯 Exercise 20: Configure P1, P2, S1, & S2 to successfully ping 8.8.8.8
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+
+&nbsp;
+---
+&nbsp;
+
+### Route Maps
+
+conf t
+ access-list 1 permit 10.0.0.0 0.255.255.255
+ access-list 1 permit 172.16.0.0 0.15.255.255
+ access-list 1 permit 192.168.0.0 0.0.255.255
+ !
+ route-map NAT_ISP1 permit 10
+  match ip address 1
+  match interface e1/1
+ route-map NAT_ISP2 permit 10
+  match ip address 1
+  match interface e1/2
+ route-map NAT_ISP3 permit 10
+  match ip address 1
+  match interface e1/3
+ !
+ ip nat pool POOL7 207.7.7.10 207.7.7.254 netmask 255.255.255.0  
+ ip nat pool POOL8 208.8.8.10 208.8.8.254 netmask 255.255.255.0
+ ip nat pool POOL9 209.9.9.10 209.9.9.254 netmask 255.255.255.0
+ ip nat inside source route-map NAT_ISP1 pool POOL8 overload
+ ip nat inside source route-map NAT_ISP2 pool POOL7 overload
+ ip nat inside source route-map NAT_ISP3 pool POOL9 overload
  end
  
-or
-
-Redistribute static routes into OSPF
-
-!@R4
+ 
+ 
 conf t
- router ospf 1
-  redistribute static subnets
-  end
-
-
-
-
----
-
-NAT Overloading or PAT
-
-- Translate private ips to a single ip  using a unique port number.
-
-!@R1
-clear ip nat translation *
-conf t
- no ip nat inside source list 1 pool mynatpool
+ ip nat inside source static 10.1.4.6 209.9.9.10 
+ ip nat inside source static 10.1.1.2 208.8.8.10
+ ip nat inside source static 10.1.1.10 207.7.7.10
  end
-
-
-!@R1
-conf t
- ip nat inside source list 1 interface e1/1 overload
- end
-
-
-
-Exercise 20: Configure P1, P2, S1, & S2 to successfully ping 8.8.8.8
-
-They do not have default routes
-
-!@P1,P2
-conf t
- ip route 0.0.0.0 0.0.0.0 10.2.1.1
- end
-
-
-!@S1
-conf t
- ip route 0.0.0.0 0.0.0.0 192.168.1.129
- end
-
-!@S2
-conf t
- ip route 0.0.0.0 0.0.0.0 10.2.2.2
- end
-
-Why are end devices configured with default routes.
+show ip nat translations
 
 
 
 
 
 
------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 IPv6
 
@@ -2908,37 +2987,6 @@ IPv6 autoconfig
 
 
 
-conf t
- access-list 1 permit 10.0.0.0 0.255.255.255
- access-list 1 permit 172.16.0.0 0.15.255.255
- access-list 1 permit 192.168.0.0 0.0.255.255
- !
- route-map NAT_ISP1 permit 10
-  match ip address 1
-  match interface e1/1
- route-map NAT_ISP2 permit 10
-  match ip address 1
-  match interface e1/2
- route-map NAT_ISP3 permit 10
-  match ip address 1
-  match interface e1/3
- !
- ip nat pool POOL7 207.7.7.10 207.7.7.254 netmask 255.255.255.0  
- ip nat pool POOL8 208.8.8.10 208.8.8.254 netmask 255.255.255.0
- ip nat pool POOL9 209.9.9.10 209.9.9.254 netmask 255.255.255.0
- ip nat inside source route-map NAT_ISP1 pool POOL8 overload
- ip nat inside source route-map NAT_ISP2 pool POOL7 overload
- ip nat inside source route-map NAT_ISP3 pool POOL9 overload
- end
- 
- 
- 
-conf t
- ip nat inside source static 10.1.4.6 209.9.9.10 
- ip nat inside source static 10.1.1.2 208.8.8.10
- ip nat inside source static 10.1.1.10 207.7.7.10
- end
-show ip nat translations
 
 
 
