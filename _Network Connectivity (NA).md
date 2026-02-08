@@ -2146,8 +2146,8 @@ Steps to summarize routes for OSPF
 
 <br>
 
-3. Based on the difference (3), determine the next closes i.
-The closest to 3 is 4i
+3. Pick an i that can aggregate all the routes
+4i
 
 <br>
 
